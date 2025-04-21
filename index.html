@@ -11,13 +11,102 @@
 		<link rel="stylesheet" href="dist/theme/black.css">
 
 		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		<link rel="stylesheet" href="plugin/highlight/dracula.css">
+		<style>
+			
+			.reveal p {
+				margin: var(--r-block-margin) 0 var(--r-block-margin) 0;
+			}
+			.reveal pre {
+				width: 100%;
+				/* font-size: var(--jp-code-font-size); */
+				line-height: 1.3em;
+				font-family: 'Fira Code Nerd Font Propo', 'Courier New', Courier, monospace;
+			}
+			body > div > div.slides {
+				inset: 40% auto auto 50% !important;
+				width: 50vh !important;
+			}
+		</style>		
 	</head>
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+<section data-markdown>
+<textarea data-template>
+# Theory
+## Finite State Machine Definition
+A Finite State Machine (FSM) or Finite State Automaton (FSA) is formally defined as a 5-tuple (Q, Σ, δ, q0, F) where:
+
+- Q is a finite set of states
+- Σ (sigma) is a finite set of possible inputs
+- δ (delta) is the transition function. 
+
+	Given a state and an input, the transition function determines the next state: Q × Σ → Q
+- q0 is the *initial* state. Q includes q0.
+- F ⊆ Q is the finite set of accepting (final) states. Q includes each set in F.
+</textarea>
+</section>
+<section data-markdown>
+<textarea data-template>
+## Definition but in Typescript
+
+<pre><code class="typescript">
+type State = string; // Represents a state in the FSM
+type Input = string; // Represents an input symbol in the FSM
+
+class FiniteStateMachine {
+	private states: Set<State>; // Q: finite set of states
+	private inputs: Set<Input>; // Σ: finite set of possible inputs
+	private transitionFunction: (state: State, input: Input) => State; // δ: transition function
+	private initialState: State; // q0: initial state
+	private acceptingStates: Set<State>; // F: set of accepting (final) states
+}</code></pre>
+</section>
+<section data-markdown>
+<textarea data-template>
+## 1. Deterministic Finite Automata (DFA)
+
+- Each state has exactly one transition for each input symbol
+- Transitions are deterministic (predictable)
+- Formally: δ: Q × Σ → Q is a total function
+</section>
+<section data-markdown>
+<textarea data-template>
+## 2. Non-deterministic Finite Automata (NFA)
+
+- States can have multiple transitions for the same input
+- Can include ε-transitions (empty transitions)
+- Formally: δ: Q × (Σ ∪ {ε}) → P(Q), where P(Q) is the power set of Q
+</section>
+<section data-markdown>
+<textarea data-template>
+## 2. State Machine Minimization
+- Every NFA can be converted to an equivalent DFA through the subset construction algorithm.
+- Hopcroft's Algorithm (O(n log n) complexity)
+</section>
+<section data-markdown>
+<textarea data-template>
+```typescript
+type StateConfig<S, E> = { 
+	[K in keyof S]: { 
+		on: { 
+			[J in keyof E]?: keyof S; 
+		}; 
+	}; 
+};
+```
+</section>
+<section data-markdown>
+<textarea data-template>
+# Best Practices and Design Considerations
+
+## Transition Logic
+
+- Separate state machine definition, transition logic, and state behavior (implementation)
+- Use guard conditions for complex transitions
+</textarea>
+</section>
 			</div>
 		</div>
 
@@ -31,8 +120,13 @@
 			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
-
-				// Learn about plugins: https://revealjs.com/plugins/
+				controls: true,
+				progress: true,
+				history: true,
+				transition: "slide",
+				slideNumber: "c/t",
+				navigationMode: "linear",
+				transitionSpeed: "fast",
 				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
 			});
 		</script>
